@@ -28,6 +28,17 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      if (window.nw) {
+        window.MODULES = require('./module');
+        var win = nw.Window.get();
+        win.on('close', function () {
+          nw.App.quit();
+        });
+      } else {
+        window.MODULES = {};
+      }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.
