@@ -1,26 +1,54 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Provider} from 'react-redux';
+import {ThemeProvider} from 'styled-components';
+import { PersistGate } from 'redux-persist/lib/integration/react'
+import {HashRouter as Router, Route, Switch} from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { getPersistor } from '@rematch/persist'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Loading from './containers/loading';
+import HomePage from './containers/home-page'
+
+import store from './store';
+import Config from './config';
+import theme from './theme'
+import nw from "./lib/nw";
+
+class NotFoundPage extends React.PureComponent {
+  render() {
+    return null
+  }
 }
 
-export default App;
+const persistor = getPersistor()
+
+export default class App extends React.PureComponent{
+  async componentDidMount () {
+    if (process.env.NODE_ENV === 'development' && Config.IS_NW) {
+      let win = nw?.Window?.get()
+      win.show()
+      win.showDevTools()
+    }
+  }
+  render () {
+    return (
+      <HelmetProvider>
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <PersistGate persistor={persistor}>
+              <React.Fragment>
+                <Router>
+                  <Switch>
+                    <Route exact path='/' component={HomePage} />
+                    <Route component={NotFoundPage} />
+                  </Switch>
+                </Router>
+                <Loading />
+              </React.Fragment>
+            </PersistGate>
+          </ThemeProvider>
+        </Provider>
+      </HelmetProvider>
+    );
+  }
+}
