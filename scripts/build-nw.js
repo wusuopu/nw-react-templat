@@ -30,11 +30,11 @@ const genManifest = () => {
 // copy build files to nwjs folder
 const bundle = async (nwjsBinPath, release) => {
   const OUTPUTS = {
-    win32: path.join('dist', 'win'),
-    linux: path.join('dist', 'linux'),
-    darwin: path.join('dist', 'mac'),
+    win32: 'win',
+    linux: 'linux',
+    darwin: 'mac',
   }
-  let output = path.join('releases', release)
+  let output = path.join('releases', OUTPUTS[release])
   if (await fs.exists(output)) {
     await (fs.rm || fs.rmdir)(output, {recursive: true})
   }
@@ -45,7 +45,7 @@ const bundle = async (nwjsBinPath, release) => {
   }
 
   return new Promise((resove, reject) => {
-    let zipfileName = path.join(output, `app-${release}-${app.version}.zip`)
+    let zipfileName = path.join(output, `app-${OUTPUTS[release]}-${app.version}.zip`)
     let zipfile = fs.createWriteStream(zipfileName)
     let archive = archiver('zip', { zlib: { level: 9 } });
 
