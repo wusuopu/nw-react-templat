@@ -19,7 +19,7 @@ const genManifest = () => {
     }, app.window),
     "show": false,
     "permissions": [ "chrome-extension://*", "file:///*", "http://*/*", "https://*/*" ],
-    "chromium-args": '',
+    "chromium-args": '--user-data-dir=nwjs-profile',
     "node-remote": 'file:///*',
   }
   if (!fs.existsSync('build')) { fs.mkdirSync('build') }
